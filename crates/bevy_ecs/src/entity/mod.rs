@@ -205,6 +205,7 @@ impl SparseSetIndex for EntityRow {
 #[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
 #[cfg_attr(feature = "bevy_reflect", reflect(opaque))]
 #[cfg_attr(feature = "bevy_reflect", reflect(Hash, PartialEq, Debug, Clone))]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(transparent)]
 pub struct EntityGeneration(u32);
 
@@ -612,6 +613,22 @@ impl<'de> Deserialize<'de> for Entity {
         let id: u64 = Deserialize::deserialize(deserializer)?;
         Entity::try_from_bits(id)
             .ok_or_else(|| D::Error::custom("Attempting to deserialize an invalid entity."))
+    }
+}
+
+/// Outputs the short entity identifier, including the index and generation.
+///
+/// This takes the format: `{index}v{generation}`.
+///
+/// For [`Entity::PLACEHOLDER`], this outputs `PLACEHOLDER`.
+#[cfg(feature = "defmt")]
+impl defmt::Format for Entity {
+    fn format(&self, fmt: defmt::Formatter<'_>) {
+        if self == &Self::PLACEHOLDER {
+            defmt::write!(fmt, "PLACEHOLDER")
+        } else {
+            defmt::write!(fmt, "{}v{}", self.index(), self.generation())
+        }
     }
 }
 
