@@ -85,6 +85,7 @@ critical-section = [
 
 hotpatching = ["dep:subsecond"]
 
+defmt = ["dep:defmt"]
 [dependencies]
 bevy_ptr = { path = "../bevy_ptr", version = "0.17.0-dev" }
 bevy_reflect = { path = "../bevy_reflect", version = "0.17.0-dev", features = [
@@ -125,6 +126,8 @@ subsecond = { version = "0.7.0-alpha.1", optional = true }
 slotmap = { version = "1.0.7", default-features = false }
 
 concurrent-queue = { version = "2.5.0", default-features = false }
+
+defmt = { version = "1.0", optional = true }
 [target.'cfg(not(all(target_has_atomic = "8", target_has_atomic = "16", target_has_atomic = "32", target_has_atomic = "64", target_has_atomic = "ptr")))'.dependencies]
 concurrent-queue = { version = "2.5.0", default-features = false, features = [
   "portable-atomic",
